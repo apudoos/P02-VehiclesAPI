@@ -3,6 +3,9 @@ package com.udacity.vehicles.api;
 
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
@@ -37,8 +40,12 @@ class CarController {
      * Creates a list to store any vehicles.
      * @return list of vehicles
      */
-    @GetMapping//(produces = { "application/hal+json" })
-            (produces = { MediaType.APPLICATION_JSON_VALUE } )
+    @GetMapping (produces = { MediaType.APPLICATION_JSON_VALUE } )
+
+    @ApiOperation(value = "Find All Cars", notes="Find all Cars in the inventory")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Cars found"),
+            @ApiResponse(code = 404,message = "Cars not found") })
     Resources<Resource<Car>> list() {
         List<Resource<Car>> resources = carService.list().stream().map(assembler::toResource)
                 .collect(Collectors.toList());
@@ -53,6 +60,10 @@ class CarController {
      */
     @GetMapping(value="/{id}"
             ,produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ApiOperation(value = "Find Car By Id", notes="Find Car by id in the inventory")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Car found"),
+            @ApiResponse(code = 404,message = "Car not found") })
     Resource<Car> get(@PathVariable Long id) {
         /**
          * TODO: Use the `findById` method from the Car Service to get car information.
@@ -72,6 +83,10 @@ class CarController {
     @PostMapping (consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
                   produces = { MediaType.APPLICATION_JSON_VALUE }
                   )
+    @ApiOperation(value = "Add a new Car", notes="Add a new Car")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201,message = "New Car Added"),
+            @ApiResponse(code = 404,message = "Car not Added") })
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
         /**
          * TODO: Use the `save` method from the Car Service to save the input car.
@@ -91,6 +106,10 @@ class CarController {
      * @return response that the vehicle was updated in the system
      */
     @PutMapping(value="/{id}" ,produces = { "application/hal+json" })
+    @ApiOperation(value = "Updated a Car", notes="Updated a Car")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201,message = "Car Updated"),
+            @ApiResponse(code = 404,message = "Car not Updated") })
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
         /**
          * TODO: Set the id of the input car object to the `id` input.
@@ -111,6 +130,10 @@ class CarController {
      * @return response that the related vehicle is no longer in the system
      */
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete a Car", notes="Delete a Car from inventory")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204,message = "Car Deleted"),
+            @ApiResponse(code = 404,message = "Car not Deleted") })
     ResponseEntity<?> delete(@PathVariable Long id) {
         /**
          * TODO: Use the Car Service to delete the requested vehicle.

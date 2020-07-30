@@ -117,7 +117,6 @@ public class CarService {
         Optional<Car> carOptionals = repository.findById(id);
 
         if(carOptionals.isPresent()) {
-            System.out.println("In delete");
             repository.deleteById(carOptionals.get().getId());
         } else {
             throw new CarNotFoundException();
